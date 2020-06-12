@@ -1,0 +1,35 @@
+<div class="page-header">
+  <div class="row align-items-end">
+    <div class="col-lg-8">
+      <div class="page-header-title">
+        <div class="d-inline">
+          <h4>Uid Whitelist Setting</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="page-header-breadcrumb">
+        <ul class="breadcrumb-title">
+          <li class="breadcrumb-item">
+            <a href="/"> <i class="feather icon-home"></i> </a>
+          </li>
+          <li class="breadcrumb-item"><a href="/">Home</a>
+          </li>
+          <li class="breadcrumb-item"><a href="#!">Whitelist</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mb-4 mt-4">
+  <div class="col-4">
+    <input type="number" name="added-uid" id="added-uid" class="form-control">
+  </div>
+  <div class="col-4">
+    <button class="btn btn-primary" type="button" onclick="add()">Add Uid</button>
+  </div>
+</div>
+<div class="card" id="whitelist">
+
+</div>

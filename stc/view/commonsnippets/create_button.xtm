@@ -1,0 +1,6 @@
+<!-- Begin snippet nav button -->
+<!-- Param: <fea/command name> <slugname> <text> -->
+<li class=" nav nav-list">
+  <a href="/create?{{ARG0}}"><span class="menu-text"> <b>{{ARG2}}</b></span></a>
+</li>
+<!-- End snippet nav button -->

@@ -1,0 +1,63 @@
+<script>
+  function removeResource() {
+    if (!confirm("Are you sure?")) return;
+    let type = $(".cmd-select option:selected").val();
+    // let obj = new Object();
+    if (type != "") {
+      let feature = $(".fea-select option:selected").val();
+      let cmd = $(".cmd-select option:selected").val();
+      var settings = {
+        "url": `?action=cmd&cmd=${cmd}&name=${feature}`,
+        "method": "POST",
+        "timeout": 0,
+      };
+    }
+    else {
+      let feature = $(".fea-select option:selected").val();
+      var settings = {
+        "url": `?action=fea&name=${feature}`,
+        "method": "POST",
+        "timeout": 0,
+      };
+    }
+
+    $.ajax(settings).done(function (response) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: "Success.",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      window.location.href = "/delete";
+    });
+  }
+  function requestTab(cmd, subcmd = null) {
+    if (window.location.pathname != "cmd")
+      window.location.href = "/cmd";
+  };
+  var fealst = {{ FEAS }};
+  var feamap = {{ FEA_MAP }};
+  $(function () {
+    fealst.forEach(element => {
+      $('.fea-select').append(`<option value="${element}"> 
+                                     ${element} 
+                                </option>`);
+    });
+    $('.fea-select').change(() => {
+      $('.cmd-select').empty();
+      $('.cmd-select-div').show();
+      rescmd = feamap[$('.fea-select option:selected').val()];
+      rescmd.forEach(element => {
+        $('.cmd-select').append(`<option value="${element}"> 
+                                     ${element} 
+                                </option>`);
+      });
+      $('.cmd-select').prepend(`<option value="" selected>Entire Feature</option>`);
+    });
+  });
+  $("select").select2();
+
+
+ 
+</script>

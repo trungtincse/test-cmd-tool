@@ -1,0 +1,112 @@
+<nav class="pcoded-navbar">
+  <div class="pcoded-inner-navbar main-menu">
+    <ul class="pcoded-item pcoded-left-item">
+      <li class="nav nav-list">
+        <a href="/home" rel="home">
+          <span class="pcoded-micon"><i class="ion-home"></i></span>
+          <span class="pcoded-mtext">Home</span>
+        </a>
+      </li>
+      {{#ADMIN_OPERATION_SECTION}}
+      <li class="nav nav-list">
+        <a href="/create" rel="create">
+          <span class="pcoded-micon"><i class="ion-plus"></i></span>
+          <span class="pcoded-mtext">Create command</span>
+        </a>
+      </li>
+
+      {{/ADMIN_OPERATION_SECTION}}
+
+
+      {{#TESTER_OPERATION_SECTION}}
+      <li class="nav nav-list">
+        <a href="/cmd" rel="cmd">
+          <span class="pcoded-micon"><i class="menu-icon fa fa-caret-square-o-right"></i></span>
+          <span class="pcoded-mtext">Execute CMD</span>
+        </a>
+      </li>
+      {{/TESTER_OPERATION_SECTION}}
+
+
+
+    </ul>
+    <ul class="pcoded-item pcoded-left-item">
+      {{#NEW_MENU}}
+      {{MENU}}
+      {{/NEW_MENU}}
+    </ul>
+    {{#ROLE_SECTION}}
+    <div class="pcoded-navigatio-lavel">
+      <span class="menu-text"> User Setting </span>
+    </div>
+    <ul class="pcoded-item pcoded-left-item">
+
+      <li class="nav nav-list">
+        <a href="/whitelist" rel="role">
+          <span class="pcoded-micon"><i class="fa fa-cog fa-fw"></i></span>
+          <span class="pcoded-mtext">Uid Whitelist</span>
+        </a>
+      </li>
+    </ul>
+    {{/ROLE_SECTION}}
+  </div>
+</nav>
+
+
+<!-- <li class="{{NAV_ACTIVE_DASHBOARD}}">
+  <a href="{{PREFIX_PATH}}/dashboard">
+    <span class="pcoded-micon"><i class="feather icon-monitor"></i></span>
+    <span class="pcoded-mtext">Dashboard</span>
+  </a>
+</li>
+<li class="{{NAV_ACTIVE_NOTIFICATION}}">
+  <a href="{{PREFIX_PATH}}/notifications">
+    <span class="pcoded-micon"><i class="feather icon-bell"></i></span>
+    <span class="pcoded-mtext">Notifications</span>
+    {{#VIEW_TOTAL_NOTIFICATION}}
+    <span class="pcoded-badge label bg-youtube">{{TOTAL_NOTIFICATION}}</span>
+    {{/VIEW_TOTAL_NOTIFICATION}}
+  </a>
+</li>
+<li class="{{NAV_ACTIVE_OA_USERS}}">
+  <a href="{{PREFIX_PATH}}/oa_users">
+    <span class="pcoded-micon"><i class="feather icon-user"></i></span>
+    <span class="pcoded-mtext">Zalo Users</span>
+  </a>
+</li>
+</ul>
+<div class="pcoded-navigatio-lavel">Services</div>
+<ul class="pcoded-item pcoded-left-item">
+<li class="{{NAV_ACTIVE_NEW_SERVICE}}">
+  <a href="{{PREFIX_PATH}}/service/new">
+    <span class="pcoded-micon"><i class="feather icon-plus-square"></i></span>
+    <span class="pcoded-mtext">New Service</span>
+  </a>
+</li>
+<li class="{{NAV_ACTIVE_SERVICE}}">
+  <a href="{{PREFIX_PATH}}/service">
+    <span class="pcoded-micon"><i class="feather icon-bookmark"></i></span>
+    <span class="pcoded-mtext">Services</span>
+  </a>
+</li>
+<li class="{{NAV_ACTIVE_SERVICE_TYPE_DETAIL}}">
+  <a href="{{PREFIX_PATH}}/service/edit">
+    <span class="pcoded-micon"><i class="feather icon-edit"></i></span>
+    <span class="pcoded-mtext">Edit Service</span>
+  </a>
+</li>
+<li class="{{NAV_ACTIVE_NEW_IP}}">
+  <a href="{{PREFIX_PATH}}/ip/new">
+    <span class="pcoded-micon"><i class="feather icon-plus-square"></i></span>
+    <span class="pcoded-mtext">New Server</span>
+  </a>
+</li>
+</ul>
+<div class="pcoded-navigatio-lavel">Comm</div>
+<ul class="pcoded-item pcoded-left-item">
+<li class="{{NAV_ACTIVE_COMM_WORKER}}">
+  <a href="{{PREFIX_PATH}}/commworker">
+    <span class="pcoded-micon"><i class="feather icon-compass"></i></span>
+    <span class="pcoded-mtext">Comm Worker</span>
+  </a>
+</li> -->

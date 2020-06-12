@@ -1,0 +1,63 @@
+<div class="main-body">
+  <div class="page-wrapper">
+    <!-- Page-header start -->
+    <div class="page-header">
+      <div class="row align-items-end">
+        <div class="col-lg-8">
+          <div class="page-header-title">
+            <div class="d-inline">
+              <h4>Delete FEA/CMD</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="page-header-breadcrumb">
+            <ul class="breadcrumb-title">
+              <li class="breadcrumb-item">
+                <a href="{{PREFIX_PATH}}/"> <i class="feather icon-home"></i> </a>
+              </li>
+              <li class="breadcrumb-item"><a href="{{PREFIX_PATH}}/">Home</a>
+              </li>
+              <li class="breadcrumb-item"><a href="#!">Delete FEA/CMD</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page-header end -->
+
+    <!-- Page-body start -->
+    <div class="page-body">
+      <div class="card">
+        <div class="card-block">
+          <div class="row">
+            <div class="col-3">
+              <select class="browser-default custom-select fea-select">
+                <option value="" disabled selected>Choose feature</option>
+              </select>
+            </div>
+            <div class="col-3 cmd-select-div" style="display: none !important;">
+              <select class="browser-default custom-select cmd-select">
+
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+
+            </div>
+            <div class="col-12 col-md-9"></div>
+            <div class="col-12 col-md-3">
+              <button class="btn btn-danger btn-block mt-3" onclick="removeResource()">DELETE</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- Page-body start -->
+  </div>
+</div>
+<!-- Main-body end -->

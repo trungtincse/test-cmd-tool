@@ -1,0 +1,22 @@
+<script>
+  function login() {
+    Zalo.getLoginStatus(function (response) {
+      if (response.status === 'connected') {
+        // Zalo.api('/me',
+        //   'GET',
+        //   {
+        //     fields: 'id,name'
+        //   },
+        //   function (response) {
+        //     console.log(response);
+            
+        //   }
+        // );
+        window.location.href="/home";
+      } else {
+        Zalo.login();
+        
+      }
+    });
+  }
+</script>

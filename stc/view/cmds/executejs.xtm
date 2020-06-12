@@ -1,0 +1,553 @@
+<style>
+  .md-tabs .nav-item.open .nav-link,
+  .md-tabs .nav-item.open .nav-link:focus,
+  .md-tabs .nav-item.open .nav-link:hover,
+  .md-tabs .nav-link.active,
+  .md-tabs .nav-link.active:focus,
+  .md-tabs .nav-link.active:hover {
+    color: #3a9b48;
+  }
+
+  .nav-tabs .slide {
+    background-color: #3a9b48;
+  }
+</style>
+<script type="text/javascript" src="/stc/public/js/async.min.js"></script>
+<script>
+  var requests = [];
+  function requestTab(feature, cmd) {
+    if (cmd == "" || feature == "") return;
+    if (cmd == "all") {
+      cmd = rescmd.map(v => v["cmd"]);
+      refesh();
+    }
+    else {
+      cmd = Array.of(cmd);
+    }
+    cmd.forEach(cmd => {
+      if (requests.filter(req => req["cmd"] == cmd).length > 0) return;
+      var settings = {
+        "url": `/cmd?action=requestTab&fea=${feature}`,
+        "method": "GET",
+        "timeout": 0,
+      }
+      $.ajax(settings).done(function (responce) {
+        var settings = {
+          "url": `http://{{BASEURL}}/cmd/${cmd}`,
+          "method": "GET",
+          "timeout": 0,
+        };
+        $.ajax(settings).done(function (response) {
+          if (response['error'].length > 0) {
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: "Command not found.",
+              showConfirmButton: false,
+              timer: 2000
+            });
+            return;
+          }
+          let request = new Object();
+          request["feature"] = feature;
+          request["cmd"] = cmd;
+          request["subcmd"] = [];
+          requests.push(request);
+          response['data']['subcmds'].forEach(element => {
+            request["subcmd"].push(element["subcmd"]);
+          });
+          createTab(response['data'], cmd);
+        });
+      }).fail(function (xhr) {
+        console.log("error")
+      });
+    });
+
+  }
+
+  function addContent() {
+    let feature = $(".fea-select option:selected").val();
+    let cmd = $(".cmd-select option:selected").val();
+    requestTab(feature, cmd);
+    if ($('.fea-select option:selected').val() != "")
+      $('#run-all').show();
+  }
+  function createDropdownTab(cmd) {
+    if ($(`#${cmd}-tab`).length > 0) {
+      alert(`exists`);
+      return;
+    } else {
+      $("#myTab").append(`<li class="nav-item dropdown">
+            <a class="nav-link " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#" id="${cmd}-tab" data-toggle="tab" role="tab">${cmd}</a>
+            <div class="dropdown-menu">
+            </div>
+          </li>`);
+    }
+  }
+  function createSubContent(response, subcmd, cmd, subname = "") {
+
+    let tabcontentele = $(`
+  <div class="tab-content-ele row" id="${cmd}-${subcmd}">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="row mt-2 mb-2">
+            <a class="" data-toggle="collapse"
+                data-target="#${cmd}-${subcmd}-collapse" aria-expanded="true"
+                aria-controls="${cmd}-${subcmd}-collapse">
+                <b>Subcommand ${subcmd}</b>
+            </a>
+        </div>
+        <div class="collapse show" id="${cmd}-${subcmd}-collapse">
+            <div class=" card card-body row">
+              <div class="params">
+                
+              </div>
+            </div>
+            <div class="col-md-12">
+                <button class="btn btn-primary"
+                    onclick="exec1($(this).parents('.tab-content-ele'),${cmd},${subcmd})">Run
+                    Subcommand ${subcmd}</button>
+                <div>&nbsp;</div>
+            </div>
+            <div class="result col-md-12">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div>&nbsp;</div>
+        `);
+    let i = 0;
+    response["params"].forEach(param_ele => {
+      addParam(tabcontentele, param_ele["type"], param_ele["description"], param_ele["value"], true);
+    });
+    return tabcontentele;
+  }
+  function createTab(response, cmd) {
+
+    let tabpane = $(".page-body .subcmds");
+    response["subcmds"].forEach(subcmd => {
+      tabpane.append(createSubContent(subcmd, subcmd['subcmd'], cmd));
+    });
+    tabpane.append(
+      ` 
+              <div class="row" id="${cmd}-result">
+                <div class="result col-12"></div>
+              </div>
+              `);
+    $('.tab-content').append(tabpane);
+    $(function () {
+      $('#myTab li:last-child a').tab('show');
+    });
+
+  }
+  function exec() {
+    let flag = true;
+    if ($("#uid").val() == "") {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: "Please fill out uid.",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      return;
+    }
+    $.cookie("uid", $("#uid").val());
+    $('input[required]').each((i, e) => {
+      if ($(e).val() == "") {
+
+        flag = false;
+      }
+    });
+    if (!flag) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: "Text field can not empty. ",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      return;
+    }
+    $("#result-pendding").show();
+    sequenceReqs = [];
+    requests.forEach(request => {
+      cmd = request["cmd"];
+      subcmd = request["subcmd"];
+      subcmd.forEach(subcmd => {
+        sequenceReqs.push({
+          cmd: cmd,
+          subcmd: subcmd
+        });
+      });
+    });
+    async.eachSeries(sequenceReqs, (request, callback) => {
+      cmd = request["cmd"];
+      subcmd = request["subcmd"];
+      exec1($(`#${cmd}-${subcmd}`), cmd, subcmd, callback);
+    }, err => {
+      if (err)
+        console.log(err);
+      else
+        $("#result-pendding").hide();
+    });
+  }
+  function showResult(cmd, subcmd = null, data, dom, cb) {
+    //console.log("data", data);
+    var url = `/cmd/${cmd}/sub/${subcmd}/exec`;
+
+    data["uid"] = $("#uid-select").val();
+    if (data["uid"] == null || data["uid"] == '') {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Please choose Uid!`,
+        showConfirmButton: false,
+        timer: 2000
+      })
+      return;
+    }
+    var settings = {
+      "url": url,
+      "method": "POST",
+      // "async": false,
+      "timeout": 0,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "data": JSON.stringify(data),
+      beforeSend: function () {
+        dom.find(".result").empty();
+        dom.find(".result").append(`<div class="lds-dual-ring"></div>`);
+      },
+    };
+    $.ajax(settings).done(function (response) {
+      dom.find(".result").empty();
+      let jsonPretty = JSON.stringify(response, undefined, 2);
+      result = $(`
+      <div class="row">
+        <div class="col-12">
+          <h5><b>Result</b> <button onclick="copyToClipboard($('#${cmd}-${subcmd}-pre').text())"><i class="ion-ios-copy-outline"></i></button></h5>
+          
+        </div>
+        <div class="col-12 mt-2"> <pre id="${cmd}-${subcmd}-pre" style="background-color: #EBECE4; ">${jsonPretty}</pre></div>
+     `);
+      pushNotification(`Command ${cmd}-${subcmd} success`, "success");
+      dom.find(".result").append(result);
+      if (cb != null)
+        cb();
+    });
+
+  }
+  function getDataSub(cmd, subcmd, dom, obj) {
+    paramArray = []
+    let flag = true;
+    $(dom).find(".param-card").each((index, ele) => {
+      let param = getDataParam($(ele));
+      let status_obj = {
+        message: []
+      };
+      if (validatetype(param['type'], param['value'], status_obj)) {
+        paramArray.push(param);
+      }
+      else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `In CMD ${cmd}-${subcmd}: ${status_obj['message'][0]}`,
+          showConfirmButton: false,
+          timer: 2000
+        })
+        pushNotification(`In CMD ${cmd}-${subcmd}: ${status_obj['message'][0]}`, "danger");
+        flag = false;
+      }
+    });
+    obj["subcmd"] = subcmd;
+    obj["params"] = paramArray;
+    return flag;
+  }
+  var rescmd;
+  function addParam(divEle, typeParam, description, defaultvalue, canMakeCopy) {
+    let paramEle = $(`
+<div class=${canMakeCopy ? "card-zone" : "sub-card-zone"} mt-4">
+  <div class=${canMakeCopy ? "param-card" : "sub-param-card"}>
+    <div class="row">
+      <div class="col-12 col-md-2">
+        <div class="form-group">
+          <label for="type">Type</label>
+          <h5><b class="type" id="type">${typeParam}</b></h5>
+          </select>
+        </div>
+      </div>
+      <div class="col-12 col-md-7">
+        <div class="form-group value-zone">
+          <label for="value">Value</label>
+          ${defaultvalue}
+        </div>
+      </div>
+      <div class="col-12 col-md-1">
+        <div class="form-group">
+          <label for="add"></label><br>
+          <button id="add" class="btn btn-success"><span><i class="ion-plus"></i></span></button>
+          <button id="minus" class="btn btn-danger mt-1"><span><i class="ion-minus"></i></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      `);
+    makeHeaderFeature(paramEle);
+    divEle.find('.params').append(paramEle);
+    paramBehavious(paramEle);
+    // let response = {
+    //   type: typeParam,
+    //   value: defaultvalue,
+    //   description: description
+    // }
+    // typeChangeEvent(paramEle, true, response);
+  }
+  function getDataParam(divEle, obj = null) {
+    if (obj == null)
+      obj = new Object();
+    obj["type"] = divEle.find('b.type').text();
+    if (isListType(obj["type"]))
+      obj["value"] = divEle.find('input[name="value"]').map(function (idx, elem) {
+        return convertdata(obj["type"], getValuesInputDOM($(elem)));
+      }).get();
+    else if (isTupleType(obj["type"])) {
+      types = obj["type"].split("|")[1].split("-");
+      values = divEle.find('input[name="value"]').map(function (idx, elem) {
+        let tuple_values = getValuesInputDOM($(elem));
+        return [tuple_values.map((v, i) => i < types.length ? convertdata(types[i], v) : v)];
+      }).get();
+      obj["value"] = values;
+    }
+    else {
+      obj["value"] = convertdata(obj["type"], divEle.find('input[name="value"]').val());
+    }
+    return obj;
+  }
+  function exec1(divEle, cmd, subcmd, callback = null) {
+    if ($("#uid").val() == "") {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: "Please fill out uid.",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      return;
+    }
+    // $.cookie("uid", $("#uid").val());
+    let requestdata = new Object();
+    // requestdata["uid"] = $("#uid").val();
+    requestdata["cmd"] = cmd;
+    let data = new Object();
+    if (!getDataSub(cmd, subcmd, divEle, data)) {
+      if (callback != null)
+        callback();
+      return;
+    }
+    requestdata = Object.assign({}, requestdata, data);
+    console.log(requestdata)
+    showResult(cmd, subcmd, requestdata, divEle, callback);
+  }
+  function setDefault(divEle, cmd, subcmd) {
+    let data = new Object();
+    if (!getDataSub(cmd, subcmd, divEle, data))
+      return;
+    var settings = {
+      "url": `/cmd?action=setDefault&cmd=${cmd}`,
+      "method": "GET",
+      "timeout": 0,
+    }
+    $.ajax(settings).done(function (responce) {
+      var settings = {
+        "url": `http://{{BASEURL}}/cmd/${cmd}/sub/${subcmd}`,
+        "method": "GET",
+        "timeout": 0,
+      };
+      $.ajax(settings).done(function (response) {
+        response = response["data"];
+        data["params"].forEach((element, i) => {
+          element["description"] = response["params"][i]["description"];
+
+        });
+        let requestdata = new Object();
+        requestdata["subcmd"] = subcmd;
+        requestdata["description"] = response["description"];
+        requestdata["params"] = data["params"]; // bug do  thieu description cua param
+        var settings = {
+          "url": `http://{{BASEURL}}/cmd/${cmd}/sub/${subcmd}`,
+          "method": "PUT",
+          "timeout": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "data": JSON.stringify(requestdata)
+        };
+        $.ajax(settings).done(function (response) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: "Success.",
+            showConfirmButton: false,
+            timer: 2000
+          });
+        });
+      });
+    });
+
+
+  }
+  function closeTab(cmd) {
+
+    $(`#${cmd}-tab`).parent().remove();
+    $(`#${cmd}`).remove();
+    requests = requests.filter(e => e["cmd"] != cmd);
+    //console.log(requests);
+  }
+  $("select").select2();
+  if ($.cookie("uid") != null) {
+    $("#uid").val($.cookie("uid"));
+  }
+  if ($.cookie("first_tab_feature") != null) {
+    fea = $.cookie("first_tab_feature");
+    cmd = $.cookie("first_tab_cmd");
+    requestTab(fea, cmd);
+    $.removeCookie("first_tab_feature");
+    $.removeCookie("first_tab_cmd");
+
+  }
+  function requestExec(fea, cmd) {
+    requestTab(fea, cmd);
+  }
+  // 233608722
+  function typeChangeEvent(paramEle, isUpdate = false, response = null) {
+    let value = paramEle.find('#value');
+    let type = paramEle.find('#type');
+    let addbtn = paramEle.find('#add');
+    let rmbtn = paramEle.find('#minus');
+    let addzone = paramEle.find('.value-zone');
+    let tuple_values_zone = paramEle.find('#tuple-values');
+    addbtn.on("click", () => {
+      ele = $(`
+    <div class="form-group">
+      <label for="value">A tuple value</label>
+      <input type="text" name="value" id="value" class="form-control value">
+    </div>
+    `);
+      ele.find('input[name="value"]').tagsinput({
+        allowDuplicates: true
+      });
+      addzone.append(ele);
+    });
+    rmbtn.on("click", () => {
+      if (addzone.find(".form-group").length <= 1) return;
+      addzone.find(".form-group:last-child").remove();
+    });
+
+    type.change(() => {
+      paramBehavious(paramEle, isTupleType(type.val()));
+      addzone.empty();
+      tuple_values_zone.empty();
+      if (isTupleType(type.val())) {
+        paramEle.find('.value-zone').empty();
+        ele_dom = $(`
+      <div class="row">
+        <div class="col-12 ">
+          <div class="form-group">
+            <label for="type">Element Type</label>
+            <select name="type" id="subtype" class="form-control">
+              ${getTypesForTuple()}
+            </select>
+          </div>
+        </div>
+      </div>`);
+        paramEle.find('.value-zone').append(ele_dom);
+        ele = $(`
+      <div class="form-group">
+        <label for="value">A tuple value</label>
+        <input type="text" name="value" id="value" class="form-control value">
+      </div>
+      `);
+        ele.find('input[name="value"]').tagsinput({
+          allowDuplicates: true
+        });
+        tuple_values_zone.append(ele);
+      }
+      else if (isListType(type.val())) {
+        paramEle.find('.value-zone').empty();
+        paramEle.find('.value-zone').append(`
+    <label for="value">Value</label>
+    <input type="text" name="value" id="value" class="form-control value">
+    `);
+        paramEle.find('.value-zone').find('input').tagsinput({
+          allowDuplicates: true
+        });
+      }
+      else {
+        paramEle.find('.value-zone').empty();
+        paramEle.find('.value-zone').append(`
+    <label for="value">Value</label>
+    <input type="text" name="value" id="value" class="form-control value" value=${response != null ? response["value"] : ""}>
+    `);
+      }
+    });
+
+    if (isUpdate) {
+      type.val(isTupleType(response["type"]) ?
+        response["type"].split("|")[0] : response["type"]
+      ).change();
+      if (!isTupleType(response["type"])) {
+        if (Array.isArray(response["value"])) {
+          let value = paramEle.find('#value');
+          value.tagsinput({
+            allowDuplicates: true,
+          });
+          response["value"].forEach(v => {
+            value.tagsinput('add', v + "");
+          });
+        }
+      } else {
+        tuple_types = response["type"].split("|")[1].split("-");
+        paramEle.find('.value-zone').empty();
+        tuple_values_zone.empty();
+        response["value"].forEach(values => {
+          ele = $(`
+        <div class="form-group">
+          <label for="value">A tuple value</label>
+          <input type="text" name="value" id="value" class="form-control value">
+        </div>
+        `);
+          ele.find('input[name="value"]').tagsinput({
+            allowDuplicates: true
+          });
+          addzone.append(ele);
+          values.forEach(v => {
+            ele.find('input[name="value"]').tagsinput('add', v + "");
+          });
+        });
+      }
+    }
+  }
+  function paramBehavious(paramEle, isForceShow = false) {
+    let value = paramEle.find('.value');
+    let type = paramEle.find('#type');
+    let addbtn = paramEle.find('#add');
+    let rmbtn = paramEle.find('#minus');
+    if (isForceShow) {
+      addbtn.show();
+      rmbtn.show()
+    }
+    else {
+      addbtn.hide();
+      rmbtn.hide();
+    }
+    // validate(type, value);
+  }
+
+  createTab({{ DATA }}, {{ CMD }});
+</script>

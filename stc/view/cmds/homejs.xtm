@@ -1,0 +1,106 @@
+<style>
+  .datatable td span {
+    max-width: 400px;
+    display: block;
+    overflow: hidden;
+  }
+</style>
+<script>
+  data = [
+    [
+      "1",
+      "sameek",
+      "sam",
+      "sam",
+      "sameek@test.com",
+      "1",
+      ""
+    ],
+    [
+      "2",
+      "arun singh",
+      "arun",
+      "arun",
+      "arunsingh@test.com",
+      "0",
+      ""
+    ],
+    [
+      "9",
+      "s s",
+      "sam3",
+      "sam3",
+      "ss@s.com",
+      "0",
+      ""
+    ],
+    [
+      "10",
+      "sameek mishra",
+      "sam56",
+      "sam",
+      "same@s.com",
+      "0",
+      ""
+    ],
+    [
+      "11",
+      "narendra kumar",
+      "narendra",
+      "nav",
+      "sa@sa.com",
+      "1",
+      ""
+    ],
+    [
+      "12",
+      "test test",
+      "test",
+      "test",
+      "test2@test.com",
+      "1",
+      ""
+    ]
+  ]
+  $(document).ready(function () {
+    var oTable = $('#myDataTable').dataTable({
+      "ajax": {
+        "url": "/homeajax",
+        "type": "GET"
+
+      },
+      // "sPaginationType": "full_numbers",
+      "aoColumns": [
+       {
+        "sWidth": "20%",
+        "mData": 0
+      }, {
+        "sWidth": "20%",
+        "mData": 1
+      }, 
+      {
+        "sWidth": "20%",
+        "mData": 2
+      },
+      //  {
+      //   "sWidth": "20%",
+      //   "mData": 4
+      // }, {
+      //   "sWidth": "20%",
+      //   "mData": 5
+      // },
+       {
+        "mData": 0,
+        "bSortable": false,
+        "mRender": function (data, type, full) {
+          return `
+          <a class="btn btn-primary btn-sm" href=/execute?cmd=${data}>Run</a>
+          <a class="btn btn-info btn-sm" href=/detail?cmd=${data}>Detail</a>
+          <a class="btn btn-danger btn-sm" href=/delete?cmd=${data}>Delete</a>
+          `;
+        }
+      }]
+    });
+
+  });
+</script>

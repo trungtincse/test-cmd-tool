@@ -1,0 +1,32 @@
+<div id="sidebar" class="sidebar responsive ace-save-state">
+  <ul class="nav nav-list">
+    <!--  -->
+    <li class="nav nav-list">
+      <a href="/cmd" rel="cmd">
+        <i class="menu-icon 	fa fa-caret-square-o-right"></i>
+        Execute CMD
+      </a>
+    </li>
+    <li class="nav nav-list">
+      <a href="/create" rel="create">
+        <i class="menu-icon fa fa-trash"></i>
+        Create feature/command
+      </a>
+    </li>
+    <li class="nav nav-list">
+      <a href="/update" rel="info">
+        <i class="menu-icon fa fa-info-circle"></i>
+        Search feature/command information
+      </a>
+    </li>
+    <li class="nav nav-list">
+      <a href="/delete" rel="delete">
+        <i class="menu-icon fa fa-trash"></i>
+        Delete feature/command
+      </a>
+    </li>
+    <li class="">
+      {{MENU}}
+    </li>
+  </ul>
+</div>

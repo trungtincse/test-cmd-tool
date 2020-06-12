@@ -1,0 +1,191 @@
+<div class="main-body">
+  <div class="page-wrapper">
+    <!-- Page-header start -->
+    <div class="page-header">
+      <div class="row align-items-end">
+        <div class="col-lg-8">
+          <div class="page-header-title">
+            <div class="d-inline">
+              <h4>Create command</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="page-header-breadcrumb">
+            <ul class="breadcrumb-title">
+              <li class="breadcrumb-item">
+                <a href="{{PREFIX_PATH}}/"> <i class="feather icon-home"></i> </a>
+              </li>
+              <li class="breadcrumb-item"><a href="{{PREFIX_PATH}}/">Home</a>
+              </li>
+              <li class="breadcrumb-item"><a href="#!">Create FEA/CMD</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page-header end -->
+
+    <!-- Page-body start -->
+    <div class="page-body">
+      <div class="card">
+        <div class="card-header">
+          <h5>Create Command</h5>
+        </div>
+        <div class="card-block">
+          <div class="row cmd-div">
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <label for="cmd">Command name</label>
+                <input type="number" name="cmd" class="form-control" value="{{CMD}}" readonly>
+              </div>
+            </div>
+            <div class="col-12 col-md-8">
+              <div class="form-group">
+                <label for="cmd">Description</label>
+                <textarea type="text" name="description" class="form-control" rows="5">{{DESCRIPTION}}</textarea>
+              </div>
+            </div>
+            <div class="col-12 col-md-8">
+              <div class="form-group">
+                <button class="btn  btn-primary" id="btn-add-sub-cmd" data-cmd="1" data-subcmd="1"
+                  onclick="addSubCMD()">Add Subcommand</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="subzone">
+                {{#SUBCMD_ZONE}}
+                <div class="card">
+                  <div class="card-header">
+                    <h5>Subcommand</h5>
+                    <div class="card-header-right">
+                      <ul class="list-unstyled card-option">
+                        <li><a onclick="removeSubCmd($(this).closest('.card'))"><i class="feather icon-trash-2"></i></a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="card-block">
+                    <div class="row sub-item">
+                      <div class="col-12">
+                        <div class="row subcmd-div">
+                          <div class="col-12 col-md-4">
+                            <div class="form-group">
+                              <label for="subcmd">Subcommand name</label>
+                              <input type="number" name="subcmd" form="subcmds" class="form-control" required=""
+                                value="{{SUBCMD}}">
+                            </div>
+                          </div>
+                          <div class="col-12 col-md-8">
+                            <div class="form-group">
+                              <label for="cmd">Description</label>
+                              <textarea type="text" name="description" form="subcmds" rows="5"
+                                class="form-control subcmd-description">{{DESCRIPTION}}</textarea>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-12">
+                            <ul>
+                              <li>
+                                <a class="accordion-msg scale_active" data-toggle="collapse"
+                                  data-target="#{{CMD}}-{{SUBCMD}}-collapse" aria-expanded="false"
+                                  aria-controls="{{CMD}}-{{SUBCMD}}-collapse">
+                                  Parameter of the subcommand
+                                </a>
+                                <div class="params collapse in show" id="{{CMD}}-{{SUBCMD}}-collapse">
+
+                                  <ul class="sortable col-12 ui-sortable">
+                                    {{#PARAM_ZONE}}
+                                    <li>
+                                      <div class="sortable-moves ccard-2 card-sub">
+                                        <div class="card-header">
+                                          <h5>Param {{INDEX}}</h5>
+                                          <div class="card-header-right">
+                                            <ul class="list-unstyled card-option">
+                                              <li><i class="feather minimize-card icon-minus"></i></li>
+                                              <li><a onclick="removeParam(this)"><i
+                                                    class="feather icon-trash-2"></i></a></li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                        <div class="card-block">
+                                          <div class="row">
+                                            <div class="col-12 col-md-3">
+                                              <div class="form-group">
+                                                <label for="type">Type</label>
+                                                <select name="type" id="type" class="form-control">
+                                                  {{TYPE}}
+                                                </select>
+                                              </div>
+                                            </div>
+                                            <div class="col-12 col-md-7">
+                                              <div class="form-group value-zone">
+                                                <label for="value">Value</label>
+                                                {{INPUT}}
+                                              </div>
+                                            </div>
+                                            <div class="col-12 col-md-1">
+                                              <label for="add"></label><br>
+                                              <button id="add" class="btn btn-success" style="display: none;"><span><i
+                                                    class="ion-plus"></i></span></button>
+                                              <button id="minus" class="btn btn-danger mt-1"
+                                                style="display: none;"><span><i class="ion-minus"></i></span></button>
+                                            </div>
+                                            <div class="col-12 col-md-3"></div>
+                                            <div id="tuple-values" class="col-md-7"></div>
+                                            <div class="col-12 col-md-1">
+                                              <label for="add"></label><br>
+                                              <button id="add-value-tuple" class="btn btn-success"
+                                                style="display: none;"><span><i class="ion-plus"></i></span></button>
+                                              <button id="minus-value-tuple" class="btn btn-danger mt-1"
+                                                style="display: none;"><span><i class="ion-minus"></i></span></button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </li>
+                                    {{/PARAM_ZONE}}
+                                  </ul>
+                                  <div class="row">
+                                    <div class="col-12 col-md-3">
+                                      <button class="btn btn-block btn-success mb-3"
+                                        onclick="addParam($(this).parents('.sub-item'))" id="add-new-param"
+                                        data-index="{{TOTAL}}">Add new param</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                {{/SUBCMD_ZONE}}
+              </div>
+            </div>
+            <div class="col-12">
+              <hr>
+            </div>
+            <div class="col-12 col-md-2">
+              <button class="btn btn-warning btn-block mt-3" onclick="createCMD()">CREATE</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- Page-body start -->
+  </div>
+</div>
+<!-- Main-body end -->
+
+</div>

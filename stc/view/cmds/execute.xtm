@@ -1,0 +1,103 @@
+<div class="main-body">
+  <div class="page-wrapper">
+    <!-- Page-header start -->
+    <div class="page-header">
+      <div class="row align-items-end">
+        <div class="col-lg-8">
+          <div class="page-header-title">
+            <div class="d-inline">
+              <h4>Execute CMD</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="page-header-breadcrumb">
+            <ul class="breadcrumb-title">
+              <li class="breadcrumb-item">
+                <a href="{{PREFIX_PATH}}/"> <i class="feather icon-home"></i> </a>
+              </li>
+              <li class="breadcrumb-item"><a href="{{PREFIX_PATH}}/">Home</a>
+              </li>
+              <li class="breadcrumb-item"><a href="#!">Execute CMD</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page-header end -->
+
+    <!-- Page-body start -->
+    <div class="page-body">
+
+      <div class="card">
+        <div class="card-header">
+          <h5>Command Tab</h5>
+        </div>
+        <div class="card-block">
+          <div class="row  mb-5">
+            <div class="col-md-2">
+              <select class="uid-select" id="uid-select">
+
+               {{UIDS}}
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 subcmds">
+              
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <button id="run-all" class="btn btn-primary col-md-1 ml-2" onclick="exec()"
+                style="display: none !important;">Run All</button>
+              <div class="cell preloader5 loader-block" id="result-pendding" style="display: none !important;">
+                <div class="circle-5 l"></div>
+                <div class="circle-5 m"></div>
+                <div class="circle-5 r"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+    <!-- Page-body start -->
+  </div>
+</div>
+<!-- Main-body end -->
+
+</div>
+<style>
+  .lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+  }
+
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid rgb(2, 116, 247);
+    border-color: rgb(2, 116, 247) transparent rgb(2, 116, 247) transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>

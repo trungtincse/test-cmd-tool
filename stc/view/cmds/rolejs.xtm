@@ -1,0 +1,126 @@
+<style>
+  .select2-container--open .select2-dropdown--below {
+    z-index: 999999999999 !important;
+  }
+</style>
+<script>
+  // $(document).ready(function () {
+  //   $(".js-example-basic-multiple").select2();
+  // });
+  var listUser = {{ USERINFO }};
+  var feas = {{ FEAS }};
+
+  listUser.forEach(element => {
+    let role = $(`
+<div class="card-block">
+  <div class="row">
+    <div class="col-md-4">
+      <label for="Name">Name</label>
+      <h5>${element.name}</h5>
+    </div>
+    <div class="col-md-2">
+      <label for="Role">Role</label>
+      <h5>${element.role}</h5>
+    </div>
+    <div class="col-md-4">
+      <label for="Permission">Permission</label>
+      <h5>${element.accessible_table}</h5>
+    </div>
+    <div class="col-md-1">
+
+    </div>
+    <div class="col-md-1">
+      <label for=""></label><br>
+      <button type="button" class="btn btn-primary" data-toggle="modal"
+        data-target="#model-${changeToSlug(element.name)}">Update</button>
+    </div>
+  </div>
+</div>
+<div class="modal fade " id="model-${changeToSlug(element.name)}" tabindex="-1" role="dialog"
+  aria-labelledby="model-${changeToSlug(element.name)}-title" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="model-${changeToSlug(element.name)}-title">Update Role</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <label for="Name">Name</label>
+            <h5>Dang Phu Trung Tin</h5>
+          </div>
+          <div class="col-12">
+            <label for="Role">Role</label>
+            <select class="role-select col-sm-12 form-control">
+              <option value="GUEST">GUEST</option>
+              <option value="TESTER">TESTER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+          <div id="permission-zone" class="col-12">
+
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick=saveRole('${element.uid}',$("#model-${changeToSlug(element.name)}"))>Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+    `);
+    $("#roles").append(role);
+    // role.find(`.modal-dialog .role-select option[value=${element.role}]`).attr('disabled', 'disabled')
+    //   .siblings().removeAttr('disabled');
+
+    role.find(`.modal-dialog .role-select`).change(function () {
+      console.log(role.find(`.modal-dialog .role-select option:selected`).val());
+      if (getRoleWithNoNeedPermission().indexOf(role.find(`.modal-dialog .role-select option:selected`).val()) >= 0) {
+        role.find(`.modal-dialog #permission-zone`).empty();
+      }
+      else {
+        role.find(`.modal-dialog #permission-zone`).append(`
+              <label for="Permission">Permission</label>
+              <select class="permission-select col-sm-12" multiple="multiple">
+  
+              </select>
+          `);
+          feas.forEach(element => {
+          role.find(".modal-dialog .permission-select").append(`
+                <option value="${element}">${element}</option> 
+                `);
+        });
+        role.find(".modal-dialog .permission-select").select2();
+      }
+    });
+
+  });
+
+  function getRoles() {
+    return ["GUEST,ADMIN,TESTER"];
+  }
+  function getRoleWithNoNeedPermission(params) {
+    return ["GUEST", "ADMIN"];
+  }
+  function saveRole(uid, div) {
+    let role = div.find('.role-select option:selected').val();
+    let permission = div.find('.permission-select').val();
+    if (getRoleWithNoNeedPermission().indexOf(role) >= 0) {
+      permission = [];
+    }
+    let settings = {
+      method: "POST",
+      contentType: 'application/json',
+      data: JSON.stringify({ "uid": uid, "role": role, "permission": permission }),
+      url: "/role"
+    }
+    $.ajax(settings).done(function (response) {
+      // console.log(response);
+      window.location = "/role";
+    });
+  }
+</script>

@@ -1,0 +1,10 @@
+USE featuredb;
+insert into feature values(null,'VIDEO');
+insert into feature values(null,'FILE');
+insert into feature values(null,'IMAGE');
+insert into cmd values(null,'video',1);
+insert into cmd values(null,'file',2);
+insert into cmd values(null,'image',3);
+insert into subcmd values(null,'subvideo',1);
+insert into subcmd values(null,'subfile',2);
+insert into subcmd values(null,'subimage',3);

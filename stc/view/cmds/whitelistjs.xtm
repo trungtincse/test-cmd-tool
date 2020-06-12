@@ -1,0 +1,107 @@
+<style>
+  .select2-container--open .select2-dropdown--below {
+    z-index: 999999999999 !important;
+  }
+</style>
+<script>
+  // $(document).ready(function () {
+  //   $(".js-example-basic-multiple").select2();
+  // });
+  var listuids = {{ UIDS }};
+  $(function () {
+    $.each(listuids, function (i, item) {
+      let uid = $(`
+<div class="card-block">
+  <div class="row">
+    <div class="col-md-2">
+      <label for="Name">#</label>
+      <h5>${i}</h5>
+    </div>
+    <div class="col-md-4">
+      <label for="Role">Uid</label>
+      <h5>${item}</h5>
+    </div>
+    <div class="col-md-4">
+
+    </div>
+    <div class="col-md-2">
+      <label for=""></label><br>
+      <button type="button" class="btn btn-danger" onclick="deleteUid(${item})">DELETE</button>
+    </div>
+  </div>
+</div>
+        `);
+      $("#whitelist").append(uid);
+      //.appendTo('#records_table');
+      // console.log($tr.wrap('<p>').html());
+    });
+  });
+
+  function add() {
+    let uid = Number($("input").val());
+    if (uid == null || uid == "") {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: "Empty or incorrect format.",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      return;
+    }
+    var settings = {
+      url: `whitelist?action=add&uid=${uid.toString()}`,
+      method: "POST"
+    };
+    $.ajax(settings).done(function (response) {
+      if (!response.success) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: response.error,
+          showConfirmButton: false,
+          timer: 2000
+        });
+      } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: "Success.",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        window.location = "/whitelist";
+
+      }
+    }).fail(function (xhr) {
+      console.log("asdasd");
+    });
+  }
+  function deleteUid(uid) {
+    var settings = {
+      url: `whitelist?action=delete&uid=${uid.toString()}`,
+      method: 'POST',
+    };
+    $.ajax(settings).done(function (response) {
+      if (!response.success) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: response.error,
+          showConfirmButton: false,
+          timer: 2000
+        });
+      } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: "Success.",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        window.location = "/whitelist";
+
+      }
+    });
+  }
+</script>

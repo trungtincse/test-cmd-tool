@@ -1,0 +1,79 @@
+<div class="main-body">
+  <div class="page-wrapper">
+    <!-- Page-header start -->
+    <div class="page-header">
+      <div class="row align-items-end">
+        <div class="col-lg-8">
+          <div class="page-header-title">
+            <div class="d-inline">
+              <h4>Create command</h4>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="page-header-breadcrumb">
+            <ul class="breadcrumb-title">
+              <li class="breadcrumb-item">
+                <a href="{{PREFIX_PATH}}/"> <i class="feather icon-home"></i> </a>
+              </li>
+              <li class="breadcrumb-item"><a href="{{PREFIX_PATH}}/">Home</a>
+              </li>
+              <li class="breadcrumb-item"><a href="#!">Create FEA/CMD</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page-header end -->
+
+    <!-- Page-body start -->
+    <div class="page-body">
+    <div class="card">
+      <div class="card-header">
+        <h5>Create Command</h5>
+      </div>
+      <div class="card-block">
+        <div class="row cmd-div">
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label for="cmd">Command name</label>
+              <input type="number" name="cmd" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-12 col-md-8">
+            <div class="form-group">
+              <label for="cmd">Description</label>
+              <textarea type="text" name="description" class="form-control" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="col-12 col-md-8">
+            <div class="form-group">
+              <button class="btn  btn-primary" id="btn-add-sub-cmd" data-cmd="1" data-subcmd="1"
+                onclick="addSubCMD()">Add Subcommand</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="subzone">
+            </div>
+          </div>
+          <div class="col-12">
+            <hr>
+          </div>
+          <div class="col-12 col-md-2">
+            <button class="btn btn-warning btn-block mt-3" onclick="createCMD()">CREATE</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- Page-body start -->
+</div>
+</div>
+<!-- Main-body end -->
+
+</div>

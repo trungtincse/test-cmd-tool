@@ -1,0 +1,207 @@
+<script>
+  function addSubCMD() {
+    let cmd = Number.parseInt($('#btn-add-sub-cmd').attr('data-cmd'), 10)
+    let subcmd = Number.parseInt($('#btn-add-sub-cmd').attr('data-subcmd'), 10)
+    $('#btn-add-sub-cmd').attr('data-subcmd', subcmd + 1)
+    $('.subzone').append(`
+    <div class="card">
+      <div class="card-header">
+      <h5>Subcommand</h5>
+      <div class="card-header-right">
+        <ul class="list-unstyled card-option">
+          <li><a onclick='removeSubCmd($(this).closest(".card"))'><i class="feather icon-trash-2 close-card"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  <div class="card-block">
+    <div class="row sub-item">
+      <div class="col-12">
+        <div class="row subcmd-div">
+          <div class="col-12 col-md-4">
+            <div class="form-group">
+              <label for="subcmd">Subcommand name</label>
+              <input type="number" name="subcmd" form="subcmds" class="form-control" required>
+            </div>
+          </div>
+          <div class="col-12 col-md-8">
+            <div class="form-group">
+              <label for="cmd">Description</label>
+              <textarea type="text" name="description" form="subcmds" rows="5"
+                class="form-control subcmd-description"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <ul>
+              <li>
+                <a class="accordion-msg scale_active" data-toggle="collapse"
+                  data-target="#${cmd}-${subcmd}-collapse" aria-expanded="false"
+                  aria-controls="${cmd}-${subcmd}-collapse">
+                  Parameter of the subcommand
+                </a>
+                <div class="params collapse in show" id="${cmd}-${subcmd}-collapse">
+
+                  <ul class="sortable col-12">
+                  </ul>
+                  <div class="row">
+                    <div class="col-12 col-md-3">
+                      <button class="btn btn-block btn-success mb-3"
+                        onclick='addParam($(this).parents(".sub-item"))' id="add-new-param" data-index="0">Add new param</button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+        `);
+    $('.subzone').find(".sortable").sortable();
+  }
+  function removeSubCmd(divEle) {
+    divEle.remove();
+  }
+  function removeParam(divEle) {
+    $(divEle).closest(".card-sub").remove();
+  }
+  function addParam(divEle) {
+    let index = Number.parseInt($('#add-new-param').attr('data-index'), 10);
+    $('#add-new-param').attr('data-index', index + 1);
+    let paramEle = $(`
+<li>
+  <div class="sortable-moves ccard-2 card-sub">
+    <div class="card-header">
+      <h5>Param ${index}</h5>
+      <div class="card-header-right">
+        <ul class="list-unstyled card-option">
+          <li><i class="feather minimize-card icon-minus"></i></li>
+          <li><i class="feather icon-trash-2 close-card"></i></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card-block">
+      <div class="row">
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label for="type">Type</label>
+            <select name="type" id="type" class="form-control">
+              ${getTypes()}
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-md-7">
+          <div class="form-group value-zone">
+            <label for="value">Value</label>
+            <input type="text" name="value" id="value" class="form-control value">
+          </div>
+        </div>
+        <div class="col-12 col-md-1">
+          <label for="add"></label><br>
+          <button id="add" class="btn btn-success"><span><i class="ion-plus"></i></span></button>
+          <button id="minus" class="btn btn-danger mt-1"><span><i class="ion-minus"></i></span></button>
+        </div>
+        <div class="col-12 col-md-3"></div>
+        <div id="tuple-values" class="col-md-7"></div>
+        <div class="col-12 col-md-1">
+          <label for="add"></label><br>
+          <button id="add-value-tuple" class="btn btn-success"><span><i class="ion-plus"></i></span></button>
+          <button id="minus-value-tuple" class="btn btn-danger mt-1"><span><i class="ion-minus"></i></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</li>
+                    `);
+    makeHeaderFeature(paramEle);
+    $(divEle).find('.sortable').append(paramEle);
+    paramBehavious(paramEle);
+    typeChangeEvent(paramEle, false);
+  }
+
+  function createCMD() {
+    let flag = true;
+    $('input[required]').each((i, e) => {
+      if ($(e).val() == "") {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Text field can not empty.`,
+          showConfirmButton: false,
+          timer: 2000
+        });
+        flag = false;
+      }
+    });
+    let obj = new Object();
+    getDataCmd($(".cmd-div"), false, obj);
+    obj["subcmds"] = [];
+    $(".subcmd-div").each((index, ele) => {
+      let subobj = getDataSubCmd($(ele));
+      subobj["params"] = [];
+      $(ele).next().find(".ccard-2").each((i, e) => {
+        let param = getDataParam($(e));
+        subobj["params"].push(param);
+      })
+
+      obj["subcmds"].push(subobj);
+    });
+    obj["subcmds"].sort((a, b) => a.subcmd - b.subcmd);
+    if (!flag) return;
+    var settings = {
+      "url": "/create",
+      "method": "POST",
+      "timeout": 0,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "data": JSON.stringify(obj)
+    };
+
+    $.ajax(settings).done(function (response) {
+      console.log(response)
+      if (!response.success) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: response.error,
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+      else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'success',
+          showConfirmButton: false,
+          timer: 2000
+        });
+        window.location.href = "/";
+      }
+    });
+
+  }
+
+
+  function requestTab(cmd, subcmd = null) {
+    if (window.location.pathname != "cmd")
+      window.location.href = "/cmd";
+  };
+
+  function getFeaInfo(divEle, obj) {
+    obj["featureName"] = $('input[name=featureName]').val();
+    obj["description"] = $('.fea-desc').val();
+    return obj;
+  }
+  $(".sortable").sortable();
+  $(".card-sub").each(function(i, obj) {
+    typeChangeEvent($(obj));
+  });
+</script>

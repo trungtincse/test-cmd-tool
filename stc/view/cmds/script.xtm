@@ -1,0 +1,49 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        setBreadCrumb("<ul class='breadcrumb'><li><i class='ace-icon fa fa-home home-icon'></i><a href='/'>Home</a></li><li class='active'>Feature Testing</li></ul>");
+        setPageHeader("<h1 style='display:inline;'>Execute command</span></h1><span class='pull-right'></span>");
+    });
+    {{#HAS_WRITE_PERMISSION}}
+    function loadUserDeleteBox(deleteId, zalo_uid) {
+        bootbox.confirm("Are you sure you want to delete?", function (result) {
+            if (result) {
+                $.ajax({
+                    method: "POST",
+                    url: "/depback",
+                    data: {action: "removeUser",
+                        zalo_uid: zalo_uid
+                        }
+                }).done(function (resp) {
+                    var error = resp.error;
+                    if (error >= 0) {
+                        location.reload();
+                    } else {
+                        alert("Remove failed");
+                    }
+                });
+            }
+        });
+    }
+    function loadRoleDeleteBox(deleteId, roleName) {
+        bootbox.confirm("Are you sure you want to delete?", function (result) {
+            if (result) {
+                $.ajax({
+                    method: "POST",
+                    url: "/depback",
+                    data: {action: "removeRole",
+                        role_name: roleName
+                        }
+                }).done(function (resp) {
+                    var error = resp.error;
+                    if (error >= 0) {
+                        location.reload();
+                    } else {
+                        alert("Remove failed");
+                    }
+                });
+            }
+        });
+    }
+    {{/HAS_WRITE_PERMISSION}}
+</script>
+

@@ -1,0 +1,10 @@
+<!-- name   id      type    value -->
+<!-- ARG0   ARG1    ARG2    ARG3 -->
+<div class="form-group">
+<div class="col-md-6" style="text-align: center;vertical-align: middle;">
+<label for="{{ ARG0 }}" >{{ARG0}}</label>
+</div>
+<div class="col-md-6" >
+<input id="{{ ARG1 }}" type="{{ARG2}}" name="{{ ARG1 }}" value="{{ARG3}}" class="form-control" pattern="[A-Za-z0-9_]*"/>
+</div>
+</div>

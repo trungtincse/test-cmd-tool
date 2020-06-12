@@ -1,0 +1,12 @@
+<li class="pcoded-hasmenu {{#ACTIVE}}pcoded-trigger{{/ACTIVE}}" dropdown-icon="style1" subitem-icon="style1">
+<a href="#">
+  <span class="pcoded-micon"><i class="feather icon-box"></i></span>
+    <span class="menu-text"> {{MENU_NAME}} </span>
+</a>
+<ul class="pcoded-submenu">
+    {{#NEW_MENU}}
+        {{MENU_OR_ITEM}}
+    {{/NEW_MENU}}
+</ul> 
+</li>
+

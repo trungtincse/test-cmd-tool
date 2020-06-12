@@ -1,0 +1,6 @@
+    <li class="{{CLASSNAME}}">
+        <a href="#" onclick="{{FUNCTION}}">
+            <span class="pcoded-mtext">{{ITEM_NAME}}</span>
+        </a>
+    </li>
+    

@@ -1,0 +1,17 @@
+<script>
+  // From template, used to show tooltip
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+  $(document).ready(function () {
+    $('[data-toggle="popover"]').popover({
+      html: true,
+      content: function () {
+        return $('#primary-popover-content').html();
+      }
+    });
+  });
+</script>
+
+<script src="{{PREFIX_PATH}}/public/js/service_type.js"></script>
