@@ -196,7 +196,7 @@
   }
   function showResult(cmd, subcmd = null, data, dom, cb) {
     //console.log("data", data);
-    var url = `/cmd/${cmd}/sub/${subcmd}/exec`;
+    var url = `/execute?cmd=${cmd}&subcmd=${subcmd}`;
 
     data["uid"] = $("#uid-select").val();
     if (data["uid"] == null || data["uid"] == '') {

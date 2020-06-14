@@ -12,6 +12,7 @@ import com.vng.zing.testfeature.common.TemplateManager;
 import com.vng.zing.testfeature.data.database.DataStorage;
 import com.vng.zing.testfeature.data.model.Command;
 import static com.vng.zing.testfeature.model.BaseModel.CONT_FULL_PAGE;
+import com.vng.zing.wte.extlibs.botchat.core.ZaloClientSessionManager;
 import com.zalo.zte.testworker.webserver.ExecSubcmd;
 import hapax.TemplateDictionary;
 import hapax.TemplateException;
@@ -127,5 +128,7 @@ public class ExecuteCmdModel extends BaseModel {
             java.util.logging.Logger.getLogger(ExecuteCmdModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    public static void main(String[] args) {
+        ZaloClientSessionManager session = new ZaloClientSessionManager(185230354);
+    }
 }

@@ -5,24 +5,12 @@
  */
 package com.vng.zing.testfeature.data.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.internal.bind.api.TypeReference;
-import com.vng.zing.testfeature.data.database.DataStorage;
-import java.io.IOException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import org.dizitart.no2.Document;
-import org.dizitart.no2.mapper.Mappable;
-import org.dizitart.no2.mapper.NitriteMapper;
-import org.dizitart.no2.objects.Cursor;
 import org.dizitart.no2.objects.Id;
 
 /**
